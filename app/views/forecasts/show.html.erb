@@ -1,0 +1,177 @@
+<!-- app/views/forecasts/show.html.erb -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather Forecast</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+      background-color: #138dffff;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    .search-form {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    input[type="submit"] {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    input[type="submit"]:hover {
+      background: #0056b3;
+    }
+    
+    .alert {
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .forecast-card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 20px;
+      background: white;
+    }
+    
+    .cached-indicator {
+      background: #d4edda;
+      color: #155724;
+      padding: 5px 10px;
+      border-radius: 3px;
+      font-size: 14px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    
+    .current-temp {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin: 10px 0;
+    }
+    
+    .temp-details {
+      margin: 15px 0;
+    }
+    
+    .temp-details div {
+      margin: 5px 0;
+    }
+    
+    .extended-forecast {
+      margin-top: 25px;
+    }
+    
+    .forecast-day {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+      align-items: center;
+    }
+    
+    .forecast-day:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>⛈️ Weather Forecast</h1>
+  
+  <div class="search-form">
+    <%= form_with url: forecast_path, method: :get, local: true do |form| %>
+      <div class="form-group">
+        <%= form.label :address, "Enter Address:" %>
+        <%= form.text_field :address, value: params[:address], required: true, placeholder: "Enter full address with zip code" %>
+      </div>
+      <%= form.submit "Get Forecast" %>
+    <% end %>
+  </div>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-error">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <% if @forecast %>
+    <div class="forecast-card">
+      <% if @forecast.cached %>
+        <div class="cached-indicator">⛁ Retrieved from cache</div>
+      <% end %>
+      
+      <h2>Weather for: <%= params[:address] %></h2>
+      
+      <div class="current-temp">
+        Current Temperature: <%= @forecast.current_temperature %>°F
+      </div>
+      
+      <div class="temp-details">
+        <div><strong>High:</strong> <%= @forecast.high_temperature %>°F</div>
+        <div><strong>Low:</strong> <%= @forecast.low_temperature %>°F</div>
+        <% if @forecast.forecast_data['humidity'] %>
+          <div><strong>Humidity:</strong> <%= @forecast.forecast_data['humidity'] %>%</div>
+        <% end %>
+        <% if @forecast.forecast_data['conditions'] %>
+          <div><strong>Conditions:</strong> <%= @forecast.forecast_data['conditions'] %></div>
+        <% end %>
+      </div>
+
+      <% if @forecast.extended_forecast %>
+        <div class="extended-forecast">
+          <h3>5-Day Forecast</h3>
+          <% @forecast.extended_forecast.each do |day| %>
+            <div class="forecast-day">
+              <strong><%= day['date'] %></strong>
+              High: <%= day['high'] %>°F | Low: <%= day['low'] %>°F | Conditions: <%= day['conditions'] %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</body>
+</html>
+
