@@ -39,7 +39,7 @@ class WeatherService
 
     # mock coordinates for AP & TS cities
     coordinates_map = {
-      "500001" => { lat: 17.3850, lon: 784867 }, # Hyderabad
+      "500001" => { lat: 17.3850, lon: 78.4867 }, # Hyderabad
       "500062" => { lat: 17.4948, lon: 78.3996 }, # Secunderabad
       "520001" => { lat: 16.5062, lon: 80.6480 }, # Vijayawada
       "530016" => { lat: 17.6868, lon: 83.2185 } # Visakhapatnam
