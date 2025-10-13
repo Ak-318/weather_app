@@ -32,7 +32,8 @@ class Forecast < ApplicationRecord
   end
 
   def self.fetch_fresh_forecast(address, zip_code)
-    forecast_data = WeatherService.get_forecast(address)
+    weather_data = WeatherService.new
+    forecast_data = weather_data.get_forecast(address)
     return nil unless forecast_data.present?
 
     forecast = find_or_initialize_by(zip_code: zip_code)

@@ -4,7 +4,7 @@ class WeatherService
   # based on this api forming the request and response
   BASE_URL = ENV["BASE_WEATHER_URL"]
 
-  def self.get_forecast(address)
+  def get_forecast(address)
     fetch_api_forecast(address)
   rescue => e
     Rails.logger.error("Weather API failed: #{e.message}. Using mock data.")
@@ -14,7 +14,7 @@ class WeatherService
   private
 
   # fetch from real API for weather data
-  def self.fetch_api_forecast(address)
+  def fetch_api_forecast(address)
     coordinates = get_coordinates(address)
 
     response = HTTParty.get("#{BASE_URL}/weather",
@@ -34,7 +34,7 @@ class WeatherService
     end
   end
 
-  def self.get_coordinates(address)
+  def get_coordinates(address)
     zip_code = GeocodingService.extract_zip_code(address)
 
     # mock coordinates for AP & TS cities
@@ -48,7 +48,7 @@ class WeatherService
     coordinates_map[zip_code] || { lat: 17.6868, lon: 83.2185 } # Default to Visakhapatnam
   end
 
-  def self.parse_api_response(response, address)
+  def parse_api_response(response, address)
     data = JSON.parse(response.body)
 
     {
@@ -64,7 +64,7 @@ class WeatherService
   end
 
   # mock data for forecast
-  def self.fetch_mock_forecast_date(address)
+  def fetch_mock_forecast_date(address)
     sleep(0.5)
 
     {
@@ -79,7 +79,7 @@ class WeatherService
     }
   end
 
-  def self.generate_extended_forecast
+  def generate_extended_forecast
     (0..4).map do |day|
       {
         date: (Date.today + day).strftime("%Y-%m-%d"),
